@@ -1,0 +1,36 @@
+version: "3"
+services:
+  spring-devops:
+    container_name: myspring-app
+    restart: unless-stopped
+    build:
+      context: my-spring-devop-app
+      dockerfile: Dockerfile
+    image: spring-devops
+    networks:
+      - spring-devops-network
+    depends_on:
+      - mysqldb
+    ports:
+      - "8080:8080"
+
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=donuts
+      - MYSQL_USER=spring-devops
+      - MYSQL_PASSWORD=123456
+    ports:
+      - "3306:3306"
+    networks:
+      - spring-devops-network
+    volumes:
+      - dbdata:/var/lib/mysql
+
+networks:
+  spring-devops-network:
+volumes:
+  dbdata:
+
